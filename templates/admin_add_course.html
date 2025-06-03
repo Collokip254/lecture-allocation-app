@@ -1,0 +1,22 @@
+<div class="auth-container">
+    <h2>Add Course</h2>
+    <form method="POST" action="{{ url_for('admin.add_course') }}">
+        <div class="mb-3">
+            <label for="name" class="form-label">Course Name</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="mb-3">
+            <label for="required_qual" class="form-label">Required Qualification</label>
+            <input type="text" class="form-control" id="required_qual" name="required_qual" required>
+        </div>
+        <div class="mb-3">
+            <label for="difficulty" class="form-label">Difficulty (1-10)</label>
+            <input type="number" class="form-control" id="difficulty" name="difficulty" min="1" max="10" required>
+        </div>
+        <div class="mb-3">
+            <label for="main_qualification" class="form-label">Main Qualification</label>
+            <input type="text" class="form-control" id="main_qualification" name="main_qualification" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Course</button>
+    </form>
+</div>

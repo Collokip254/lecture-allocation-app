@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Set Qualifications{% endblock %}
+
+{% block content %}
+<div class="form-container"> {# Use a wider container if needed #}
+    <h2><i class="fas fa-tasks"></i> Set Your Course Qualifications & Experience</h2>
+    <p>For each course below, please indicate if you possess the main qualification needed and estimate how many times you have previously taught this specific course (or an equivalent).</p>
+    <hr>
+
+    {% if courses %}
+        <form method="POST" action="{{ url_for('lecturer_set_qualifications') }}">
+            {% for course in courses %}
+            <div class="course-card mb-3 p-3 border rounded">
+                <h4>{{ course.name }}</h4>
+                <p class="mb-1"><small><strong>Main Qualification Required:</strong> {{ course.main_qualification }}</small></p>
+
+                <div class="row g-3 align-items-center mt-2">
+                    <div class="col-md-6">
+                         <div class="form-check">
+                            <input class="form-check-input" type="checkbox"
+                                   name="qual_{{ course.id }}" id="qual_{{ course.id }}"
+                                   {% if existing_qualifications.get(course.id, {}).get('has_qual') %}checked{% endif %}>
+                            <label class="form-check-label" for="qual_{{ course.id }}">
+                                I have the main qualification ({{ course.main_qualification }})
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="input-group input-group-sm">
+                             <span class="input-group-text" id="exp_label_{{ course.id }}">Times Taught:</span>
+                            <input type="number" class="form-control"
+                                   name="exp_{{ course.id }}" id="exp_{{ course.id }}"
+                                   min="0" value="{{ existing_qualifications.get(course.id, {}).get('exp', 0) }}"
+                                   aria-describedby="exp_label_{{ course.id }}" required>
+                         </div>
+                    </div>
+                </div> {# End row #}
+            </div> {# End course-card #}
+            {% endfor %}
+
+            <div class="d-grid gap-2 mt-4">
+                 <button type="submit" class="btn btn-primary btn-lg">Submit All Qualifications & Experience</button>
+            </div>
+        </form>
+    {% else %}
+        <div class="alert alert-warning">No courses are currently available in the system. Please check back later or contact the administrator.</div>
+    {% endif %}
+</div>
+{% endblock %}

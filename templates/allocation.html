@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="auth-container">
+    <h2>Course Allocations</h2>
+    <p>Here are the allocated courses:</p>
+
+    {% if courses %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Course Name</th>
+                <th>Main Qualification</th>
+                <th>Difficulty</th>
+                <th>Lecturer Assigned</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for course in courses %}
+            <tr>
+                <td>{{ course.name }}</td>
+                <td>{{ course.main_qualification }}</td>
+                <td>{{ course.difficulty }}</td>
+                <td>{{ course.email if course.email else 'Not Assigned' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No courses to display.</p>
+    {% endif %}
+
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+</div>
+{% endblock %}

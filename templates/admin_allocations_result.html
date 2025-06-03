@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Allocation Results{% endblock %}
+
+{% block content %}
+<div class="admin-container"> {# Use a wider container #}
+     <div class="admin-panel">
+         <h2><i class="fas fa-sitemap"></i> Allocation Results</h2>
+         {% if allocations_run %}
+            <p>The allocation process has been run. Below is the current assignment status.</p>
+            {# Optional: Display summary details if passed #}
+            {% if allocations_summary %}
+                <div class="alert alert-info">
+                    <strong>Summary of last run:</strong> {{ allocations_summary|length }} course assignment(s) made/updated.
+                     {# You could loop through allocations_summary for more detail if needed #}
+                </div>
+            {% endif %}
+         {% else %}
+            <p>Allocation has not been run yet or results are unavailable.</p>
+         {% endif %}
+     </div>
+
+     {# --- Course Assignments Table --- #}
+     <div class="card mb-4">
+        <div class="card-header">
+            <h4><i class="fas fa-book"></i> Course Assignments</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Course Name</th>
+                            <th>Main Qualification</th>
+                            <th>Difficulty</th>
+                            <th>Assigned Lecturer</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if courses %}
+                            {% for course in courses %}
+                            <tr>
+                                <td>{{ course.name }}</td>
+                                <td>{{ course.main_qualification }}</td>
+                                <td>
+                                     <span class="badge bg-{% if course.difficulty <= 3 %}success{% elif course.difficulty <= 6 %}warning{% else %}danger{% endif %}">
+                                        {{ course.difficulty }}/10
+                                     </span>
+                                </td>
+                                <td>
+                                    {% if course.lecturer_email %}
+                                        <span class="text-success fw-bold">{{ course.lecturer_email }}</span>
+                                    {% else %}
+                                        <span class="text-danger">Unassigned</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">No courses found or allocation data unavailable.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    {# --- Action Buttons --- #}
+    <div class="my-3">
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+         <a href="{{ url_for('run_allocation') }}" class="btn btn-success"><i class="fas fa-redo"></i> Re-run Allocation</a>
+     </div>
+</div>
+{% endblock %}

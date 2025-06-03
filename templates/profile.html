@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Your Profile{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+
+    <div class="card profile-card mb-4">
+        <div class="card-header">
+            <h4><i class="fas fa-user-circle me-2"></i>Your Profile</h4>
+        </div>
+        <div class="card-body profile-details">
+             {# --- DISPLAY NAME --- #}
+            <p><strong><i class="fas fa-user me-2 text-secondary"></i>Name:</strong> {{ lecturer_name }}</p>
+             {# --- DISPLAY EMAIL --- #}
+            <p><strong><i class="fas fa-envelope me-2 text-secondary"></i>Email:</strong> {{ lecturer_email }}</p>
+        </div>
+    </div>
+
+    {# --- (Assigned courses section remains the same) --- #}
+    <div class="card profile-card">
+        <div class="card-header">
+            <h4><i class="fas fa-chalkboard-teacher me-2"></i>Your Assigned Courses</h4>
+        </div>
+        <div class="card-body">
+            {% if assigned_courses %}
+                <p>Here are the courses currently assigned to you:</p>
+                <ul class="list-group assigned-courses-list">
+                    {% for course in assigned_courses %}
+                        <li class="list-group-item d-flex flex-wrap justify-content-between align-items-center">
+                            <div class="me-3 mb-2 mb-md-0">
+                                <strong class="d-block fs-5"><i class="fas fa-book-open me-2 text-primary"></i>{{ course.name }}</strong>
+                                <small class="text-muted">Main Qualification Needed: {{ course.main_qualification }}</small>
+                             </span>
+                             <span class="badge bg-{% if course.difficulty <= 3 %}success{% elif course.difficulty <= 6 %}warning text-dark{% else %}danger{% endif %} rounded-pill px-3 py-2">
+                                    <i class="fas fa-signal me-1"></i> Difficulty: {{ course.difficulty }}/10
+                                </span>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <div class="alert alert-secondary text-center">
+                    <i class="fas fa-info-circle me-2"></i>You are not currently assigned to any courses.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="mt-4 text-center">
+        <a href="{{ url_for('lecturer_set_qualifications') }}" class="btn btn-info">
+             <i class="fas fa-edit me-1"></i> Update Qualifications & Experience
+        </a>
+    </div>
+
+</div>
+{% endblock %}

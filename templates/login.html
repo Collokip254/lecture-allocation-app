@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Lecturer Login{% endblock %}
+
+{% block content %}
+{# Use the new card class instead of auth-container #}
+<div class="form-container-card">
+    <h2><i class="fas fa-sign-in-alt me-2"></i>Lecturer Login</h2>
+    {# Removed hr, using spacing and card styling now #}
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('login') }}">
+        <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            {# Use input group for icon #}
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                <input type="email" class="form-control" placeholder="your.email@example.com" id="email" name="email" required>
+            </div>
+        </div>
+        <div class="mb-4"> {# Increased bottom margin #}
+            <label for="password" class="form-label">Password</label>
+            {# Use input group for icon #}
+             <div class="input-group">
+                 <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                 <input type="password" class="form-control" placeholder="Enter your password" id="password" name="password" required>
+             </div>
+        </div>
+        <div class="d-grid gap-2 mb-3">
+            {# Use the new custom button class #}
+            <button type="submit" class="btn btn-submit-custom">Login</button>
+        </div>
+        <div class="mt-3 text-center form-links"> {# Added form-links class #}
+            <a href="{{ url_for('forgot_password') }}">Forgot Password?</a> |
+            <a href="{{ url_for('signup') }}">Create Account</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

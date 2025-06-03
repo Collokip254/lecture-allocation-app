@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Allocation Results</h2>
+    
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Course Allocations</h5>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Course</th>
+                            <th>Assigned Lecturer</th>
+                            <th>Experience</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for course_id, lecturer_id in allocations.items() %}
+                        {% set course = get_course(course_id) %}
+                        {% set lecturer = get_lecturer(lecturer_id) %}
+                        <tr>
+                            <td>{{ course.name }}</td>
+                            <td>{{ lecturer.email }}</td>
+                            <td>{{ lecturer.get_experience(course.id) }} semesters</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="alert alert-success mt-4">
+        Allocations completed successfully. Emails have been sent to all lecturers.
+    </div>
+    
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-primary">Back to Dashboard</a>
+</div>
+{% endblock %}

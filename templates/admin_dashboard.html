@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="admin-container"> {# Use a wider container #}
+    <div class="admin-panel">
+        <h2><i class="fas fa-tachometer-alt"></i> Admin Dashboard</h2>
+        <p>Welcome, {{ session.get('admin_username', 'Admin') }}!</p>
+    </div>
+
+     {# --- Add Course Form --- #}
+     <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4><i class="fas fa-plus"></i> Add New Course</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('add_course') }}">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                         <label for="name" class="form-label">Course Name</label>
+                        <input type="text" name="name" id="name" class="form-control" placeholder="e.g., Advanced Python" required>
+                    </div>
+                    <div class="col-md-4">
+                         <label for="main_qualification" class="form-label">Main Qualification Needed</label>
+                        <input type="text" name="main_qualification" id="main_qualification" class="form-control" placeholder="e.g., PhD in CS, AWS Certified" required>
+                    </div>
+                    <div class="col-md-2">
+                         <label for="difficulty" class="form-label">Difficulty (1-10)</label>
+                        <input type="number" name="difficulty" id="difficulty" class="form-control" placeholder="1-10" min="1" max="10" required>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-success w-100"><i class="fas fa-plus"></i> Add</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {# --- Run Allocation Button --- #}
+     <div class="my-4 text-center">
+        <a href="{{ url_for('run_allocation') }}" class="btn btn-success btn-lg"><i class="fas fa-calculator"></i> Run Course Allocations</a>
+        <small class="d-block mt-2 text-muted">(This will assign lecturers to unassigned courses based on qualifications and experience)</small>
+     </div>
+     <hr>
+
+    {# --- Courses Table --- #}
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4><i class="fas fa-book"></i> Manage Courses</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Course Name</th>
+                            <th>Main Qualification</th>
+                            <th>Difficulty</th>
+                            <th>Assigned Lecturer</th>
+                            <th class="table-actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="courses-table-body">
+                        {% if courses %}
+                            {% for course in courses %}
+                            <tr>
+                                <td>{{ course.name }}</td>
+                                <td>{{ course.main_qualification }}</td>
+                                <td>
+                                     <span class="badge bg-{% if course.difficulty <= 3 %}success{% elif course.difficulty <= 6 %}warning{% else %}danger{% endif %}">
+                                        {{ course.difficulty }}/10
+                                     </span>
+                                </td>
+                                <td>{{ course.lecturer_email if course.lecturer_email else 'Unassigned' }}</td>
+                                <td class="table-actions">
+                                    <a href="{{ url_for('edit_course', course_id=course.id) }}" class="btn btn-sm btn-warning" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form method="POST" action="{{ url_for('delete_course', course_id=course.id) }}" class="action-form" onsubmit="return confirm('Delete course {{ course.name }} permanently?');">
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">No courses found. Add some using the form above.</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+     {# --- Lecturers Table --- #}
+    <div class="card">
+        <div class="card-header">
+            <h4><i class="fas fa-users"></i> Manage Lecturers</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Ready for Allocation</th>
+                            <th>Load</th> {# Added Load #}
+                            <th class="table-actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if lecturers %}
+                            {% for lecturer in lecturers %}
+                            <tr>
+                                <td>{{ lecturer.email }}</td>
+                                <td>
+                                    <span class="badge bg-{{ 'success' if lecturer.is_verified else 'secondary' }} status-badge">
+                                        {{ 'Verified' if lecturer.is_verified else 'Pending Verification' }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-{{ 'success' if lecturer.is_ready_for_allocation else 'warning' }} status-badge">
+                                        {{ 'Ready' if lecturer.is_ready_for_allocation else 'Not Ready' }}
+                                    </span>
+                                </td>
+                                <td>{{ lecturer.current_load }}</td> {# Added Load #}
+                                <td class="table-actions">
+                                    <form method="POST" action="{{ url_for('toggle_lecturer_status', lecturer_id=lecturer.id) }}" class="action-form">
+                                        <button type="submit" class="btn btn-sm btn-{{ 'secondary' if lecturer.is_verified else 'success' }}" title="{{ 'De-verify' if lecturer.is_verified else 'Verify' }}">
+                                            <i class="fas fa-{{ 'user-slash' if lecturer.is_verified else 'user-check' }}"></i>
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ url_for('delete_lecturer', lecturer_id=lecturer.id) }}" class="action-form" onsubmit="return confirm('DELETE lecturer {{ lecturer.email }}? This cannot be undone.');">
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Delete Lecturer">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted">No lecturers registered yet.</td> {# Adjusted colspan #}
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

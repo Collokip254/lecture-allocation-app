@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Login{% endblock %}
+
+{% block content %}
+{# Use the NEW specific class for the container #}
+<div class="admin-login-card">
+    <h2><i class="fas fa-user-shield me-2"></i>Admin Login</h2>
+
+     {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="{{ url_for('admin_login') }}">
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            {# Use input group for icon #}
+             <div class="input-group">
+                 <span class="input-group-text"><i class="fas fa-user"></i></span>
+                 <input type="text" class="form-control" placeholder="Admin username" id="username" name="username" required>
+             </div>
+        </div>
+        <div class="mb-4"> {# Increased bottom margin #}
+            <label for="password" class="form-label">Password</label>
+             {# Use input group for icon #}
+            <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-key"></i></span>
+                <input type="password" class="form-control" placeholder="Admin password" id="password" name="password" required>
+            </div>
+        </div>
+        <div class="d-grid gap-2">
+            {# Use the NEW specific button class #}
+            <button type="submit" class="btn btn-admin-login">Login</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

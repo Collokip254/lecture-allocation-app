@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Course{% endblock %}
+
+{% block content %}
+<div class="form-container"> {# Use a form container class #}
+    <div class="card">
+        <div class="card-header bg-warning">
+             {# Ensure course object exists before accessing attributes #}
+            <h4>Edit Course: {% if course %}{{ course.name }}{% else %}Unknown Course{% endif %}</h4>
+        </div>
+        <div class="card-body">
+             {% if course %}
+            <form method="POST" action="{{ url_for('edit_course', course_id=course.id) }}">
+                <div class="mb-3">
+                    <label for="edit-name" class="form-label">Course Name</label>
+                    <input type="text" id="edit-name" name="name" class="form-control" value="{{ course.name }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="edit-main_qualification" class="form-label">Main Qualification</label>
+                    <input type="text" id="edit-main_qualification" name="main_qualification" class="form-control" value="{{ course.main_qualification }}" required>
+                </div>
+                 {# Optional: Required Qualifications field #}
+                 {% if 'required_qual' in course %} {# Check if field exists #}
+                 <div class="mb-3">
+                     <label for="edit-required_qual" class="form-label">General Required Qualifications (Optional Info)</label>
+                     <textarea id="edit-required_qual" name="required_qual" class="form-control" rows="3">{{ course.required_qual }}</textarea>
+                 </div>
+                 {% endif %}
+                <div class="mb-3">
+                    <label for="edit-difficulty" class="form-label">Difficulty Level (1-10)</label>
+                    <input type="number" id="edit-difficulty" name="difficulty" class="form-control" min="1" max="10" value="{{ course.difficulty }}" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Cancel</a>
+            </form>
+             {% else %}
+                 <div class="alert alert-danger">Course data could not be loaded.</div>
+                 <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+             {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
