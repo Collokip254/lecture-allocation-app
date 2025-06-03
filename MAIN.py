@@ -17,8 +17,8 @@ app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
 app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
 app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS', 'True').lower() == 'true'
 # !!! IMPORTANT: Replace placeholders with your actual email and App Password !!!
-app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', 'collinskiprono2002@gmail.com')
-app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', 'vwszycaudatpbuig') # Use App Password if using Gmail
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', #replace with email
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD',  # Use App Password if using Gmail
 app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'collinskiprono2002@gmail.com')
 
 mail = Mail(app)
